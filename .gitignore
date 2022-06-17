@@ -1,5 +1,6 @@
 twitter_keys.py
 slack_key.py
+postgres_keys.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

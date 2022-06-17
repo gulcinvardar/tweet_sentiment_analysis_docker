@@ -1,0 +1,38 @@
+version: '3'
+services:
+
+  mongodb:
+    image: mongo
+    ports:
+    - 27027:27017
+
+  tweet_collector:
+    build: tweet_collector/
+    volumes:
+    - ./tweet_collector/:/app
+    depends_on:
+    - mongodb 
+
+  postgresdb:
+    image: postgres
+    ports:
+    - "5555:5432"
+    environment:
+    - POSTGRES_USER=postgres
+    - POSTGRES_PASSWORD=12345 #if you initialized your docker postgres already, use the initial password
+    - POSTGRES_DB=ukraine_twits
+
+  etl_transformer: 
+    build: etl_transformer/
+    volumes:
+    - ./etl_transformer/:/app
+    depends_on:
+    - mongodb
+    - postgresdb
+
+  slack_bot:
+      build: slack_bot/
+      volumes:
+      - ./slack_bot/:/app
+      depends_on:
+      - postgresdb 
